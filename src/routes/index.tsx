@@ -1,5 +1,5 @@
 ﻿import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Header } from "@/components/holo/Header";
 import { Intro } from "@/components/holo/Intro";
 import { ProgressBar } from "@/components/holo/ProgressBar";
@@ -256,7 +256,7 @@ function Index() {
     }
     setStep((s) => s + 1);
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [step, data, validate]);
+  }, [step, data]);
 
   const back = useCallback(() => {
     setError(null);
@@ -272,7 +272,7 @@ function Index() {
     setN8nResponse(null);
   };
 
-  const stepContent = useMemo(() => {
+  const stepContent = (() => {
     // ─── Etapa 1: Q1 + Q2 ───────────────────────────────────
     if (step === 1)
       return (
@@ -889,7 +889,7 @@ function Index() {
       );
 
     return null;
-  }, [step, data, error, submitting, next, back]);
+  })();
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-12">

@@ -4,6 +4,7 @@ const VIOLET = [114, 60, 180] as const;
 const WHITE = [255, 255, 255] as const;
 const GRAY = [190, 185, 200] as const;
 const DARK = [20, 15, 35] as const;
+const BLACK = [20, 20, 20] as const;
 
 function addWrappedText(
   doc: jsPDF,
@@ -94,7 +95,7 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
       y = checkNewPage(doc, y, margin);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
-      doc.setTextColor(200, 185, 220);
+      doc.setTextColor(80, 40, 120);
       y = addWrappedText(doc, block, margin, y, contentW, lineH);
       y += 2;
       continue;
@@ -103,7 +104,7 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
     // Parágrafo normal
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.setTextColor(...GRAY);
+    doc.setTextColor(...BLACK);
     y = addWrappedText(doc, block, margin, y, contentW, lineH);
     y += 3;
   }
@@ -118,7 +119,7 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
     doc.line(margin, pageH - 12, pageW - margin, pageH - 12);
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
-    doc.setTextColor(...GRAY);
+    doc.setTextColor(100, 100, 100);
     doc.text("MAPA VIBRACIONAL · Holo Cocriação® · Diagnóstico Energético Personalizado", pageW / 2, pageH - 7, { align: "center" });
     doc.text(`${i} / ${totalPages}`, pageW - margin, pageH - 7, { align: "right" });
   }

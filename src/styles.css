@@ -32,6 +32,7 @@
   --color-ring: var(--ring);
   --color-violet: var(--violet);
   --color-violet-soft: var(--violet-soft);
+  --color-gold: var(--gold);
   --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
@@ -59,6 +60,7 @@
   --ring: oklch(0.72 0.20 295 / 0.55);
   --violet: oklch(0.72 0.20 295);
   --violet-soft: oklch(0.82 0.14 300);
+  --gold: oklch(0.78 0.18 86);
 }
 
 .dark {
@@ -83,6 +85,7 @@
   --ring: oklch(0.72 0.20 295 / 0.55);
   --violet: oklch(0.72 0.20 295);
   --violet-soft: oklch(0.82 0.14 300);
+  --gold: oklch(0.78 0.18 86);
 }
 
 @layer base {
@@ -102,7 +105,7 @@
       radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.72 0.20 295 / 0.20), transparent 60%),
       radial-gradient(ellipse 60% 50% at 100% 100%, oklch(0.50 0.18 270 / 0.14), transparent 60%),
       radial-gradient(ellipse 60% 50% at 0% 90%, oklch(0.72 0.20 295 / 0.08), transparent 60%);
-    background-attachment: fixed;
+    background-attachment: scroll;
     min-height: 100vh;
   }
 
@@ -120,7 +123,9 @@
     box-shadow:
       0 1px 0 oklch(0.72 0.20 295 / 0.12) inset,
       0 20px 60px -20px oklch(0 0 0 / 0.60);
+    -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+    isolation: isolate;
   }
 
   .holo-gold-text {
