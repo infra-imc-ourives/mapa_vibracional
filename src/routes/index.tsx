@@ -233,7 +233,7 @@ function Index() {
       setStep(TOTAL_STEPS + 1);
 
       if (typeof window !== "undefined") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "instant" });
       }
 
       try {
@@ -255,7 +255,7 @@ function Index() {
       }
     }
     setStep((s) => s + 1);
-    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "instant" });
   }, [step, data]);
 
   const back = useCallback(() => {
@@ -898,7 +898,7 @@ function Index() {
       {step === 0 && <Intro onStart={() => setStep(1)} />}
 
       {step >= 1 && step <= TOTAL_STEPS && (
-        <div className="space-y-6">
+        <div key={step} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
           <ProgressBar step={step} />
           {stepContent}
         </div>
