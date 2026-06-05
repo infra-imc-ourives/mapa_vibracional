@@ -12,15 +12,24 @@ function addWrappedText(
   x: number,
   y: number,
   maxWidth: number,
-  lineHeight: number
+  lineHeight: number,
+  margin: number = 20
 ): number {
   const lines = doc.splitTextToSize(text, maxWidth);
-  doc.text(lines, x, y);
-  return y + lines.length * lineHeight;
+  const pageH = doc.internal.pageSize.getHeight();
+  for (const line of lines) {
+    if (y > pageH - margin) {
+      doc.addPage();
+      y = margin;
+    }
+    doc.text(line, x, y);
+    y += lineHeight;
+  }
+  return y;
 }
 
-function checkNewPage(doc: jsPDF, y: number, margin: number): number {
-  if (y > doc.internal.pageSize.getHeight() - margin) {
+function checkNewPage(doc: jsPDF, y: number, margin: number, neededHeight: number = 0): number {
+  if (y + neededHeight > doc.internal.pageSize.getHeight() - margin) {
     doc.addPage();
     return margin;
   }
@@ -74,17 +83,18 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
     // Cabeçalho de seção com ===
     if (/^===/.test(block)) {
       y += 4;
-      y = checkNewPage(doc, y, margin);
-
-      const lines = doc.splitTextToSize(block.replace(/===/g, "").trim(), contentW);
+      const sectionText = block.replace(/===/g, "").trim();
+      const lines = doc.splitTextToSize(sectionText, contentW);
       const boxH = lines.length * lineH + 4;
+      y = checkNewPage(doc, y, margin, boxH);
+
       doc.setFillColor(35, 25, 55);
       doc.rect(margin - 2, y - 5, contentW + 4, boxH, "F");
 
       doc.setFont("helvetica", "bold");
       doc.setFontSize(11);
       doc.setTextColor(...VIOLET);
-      y = addWrappedText(doc, block.replace(/===/g, "").trim(), margin, y, contentW, lineH);
+      y = addWrappedText(doc, sectionText, margin, y, contentW, lineH, margin);
       y += 3;
       continue;
     }
@@ -92,11 +102,12 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
     // Linha de pergunta Q1 a Q35
     if (/^Q\d+:/.test(block)) {
       y += 2;
-      y = checkNewPage(doc, y, margin);
+      const qLines = doc.splitTextToSize(block, contentW);
+      y = checkNewPage(doc, y, margin, qLines.length * lineH);
       doc.setFont("helvetica", "bold");
       doc.setFontSize(10);
       doc.setTextColor(80, 40, 120);
-      y = addWrappedText(doc, block, margin, y, contentW, lineH);
+      y = addWrappedText(doc, block, margin, y, contentW, lineH, margin);
       y += 2;
       continue;
     }
@@ -105,7 +116,7 @@ export async function generateAndDownloadPdf(output: string, intencao: string): 
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
     doc.setTextColor(...BLACK);
-    y = addWrappedText(doc, block, margin, y, contentW, lineH);
+    y = addWrappedText(doc, block, margin, y, contentW, lineH, margin);
     y += 3;
   }
 
