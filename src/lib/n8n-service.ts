@@ -136,13 +136,13 @@ export function formatFormDataForN8n(formData: FormData): N8nPayload {
   lines.push("");
   lines.push(`Q32: Grau de comprometimento com a mudança (1–5): ${formData.escoreComprometimento || "?"}/5`);
   lines.push("");
-  lines.push(`Q33: Sinal mais claro de que a Holo está funcionando:`);
+  lines.push(`Q33: Sinal mais claro de que o Holo está funcionando:`);
   lines.push(formData.sinalSucesso || "(não respondido)");
   lines.push("");
   lines.push(`Q34: Frente prioritária de trabalho:`);
   lines.push(formData.frenteTrabalho || "(não respondido)");
   lines.push("");
-  lines.push(`Q35: O que você quer que a Holo Cocriação transforme em você:`);
+  lines.push(`Q35: O que você quer que o Holo Cocriação transforme em você:`);
   lines.push(formData.transformacao || "(não respondido)");
   lines.push("");
 

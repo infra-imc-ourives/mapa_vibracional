@@ -211,7 +211,7 @@ function Index() {
         return null;
       case 11:
         if (!data.escoreComprometimento) return "Avalie seu nível de comprometimento.";
-        if (!data.sinalSucesso.trim()) return "Descreva o sinal de que a Holo está funcionando.";
+        if (!data.sinalSucesso.trim()) return "Descreva o sinal de que o Holo está funcionando.";
         if (!data.frenteTrabalho) return "Escolha sua frente prioritária de trabalho.";
         if (!data.transformacao.trim()) return "Escreva o que você quer transformar.";
         return null;
@@ -852,7 +852,7 @@ function Index() {
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
-              Q33: Qual seria o sinal mais claro de que a Holo está funcionando para você?
+              Q33: Qual seria o sinal mais claro de que o Holo está funcionando para você?
             </Label>
             <Textarea
               value={data.sinalSucesso}
@@ -876,7 +876,7 @@ function Index() {
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
-              Q35: O que você quer que a Holo Cocriação® transforme em você?
+              Q35: O que você quer que o Holo Cocriação® transforme em você?
             </Label>
             <Textarea
               value={data.transformacao}
