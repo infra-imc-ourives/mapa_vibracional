@@ -32,7 +32,7 @@ export function Confirmation({
     if (!outputText) return;
     setDownloading(true);
     try {
-      await generateAndDownloadPdf(outputText, data.transformacao);
+      await generateAndDownloadPdf(outputText, data.nome, data.transformacao);
     } finally {
       setDownloading(false);
     }
