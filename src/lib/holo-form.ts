@@ -1,4 +1,8 @@
 export type FormData = {
+  // Dados pessoais
+  nome: string;
+  sexo: string;
+
   // Bloco 1 - Perfil Vibracional
   emocaoDominante: string;
   relacaoDinheiro: string;
@@ -49,6 +53,8 @@ export type FormData = {
 };
 
 export const initialFormData: FormData = {
+  nome: "",
+  sexo: "",
   emocaoDominante: "",
   relacaoDinheiro: "",
   pilarBloqueado: [],
@@ -88,6 +94,13 @@ export const initialFormData: FormData = {
   frenteTrabalho: "",
   transformacao: "",
 };
+
+// Dados pessoais
+export const sexoOpts = [
+  "Feminino",
+  "Masculino",
+  "Prefiro não informar",
+];
 
 // Bloco 1
 export const emocaoDominanteOpts = [

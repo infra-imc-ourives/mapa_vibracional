@@ -8,9 +8,11 @@ import { OptionCard } from "@/components/holo/OptionCard";
 import { Confirmation } from "@/components/holo/Confirmation";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import {
   FormData,
   initialFormData,
+  sexoOpts,
   emocaoDominanteOpts,
   relacaoDinheiroOpts,
   pilarBloqueadoOpts,
@@ -161,55 +163,59 @@ function Index() {
   const validate = (s: number): string | null => {
     switch (s) {
       case 1:
+        if (!data.nome.trim()) return "Por favor, informe seu nome.";
+        if (!data.sexo) return "Por favor, selecione seu sexo.";
+        return null;
+      case 2:
         if (!data.emocaoDominante) return "Selecione sua emoção dominante.";
         if (!data.relacaoDinheiro) return "Selecione sua relação com o dinheiro.";
         return null;
-      case 2:
+      case 3:
         if (data.pilarBloqueado.length === 0) return "Escolha ao menos 1 pilar (máximo 2).";
         if (!data.padraoBotagem) return "Escolha uma opção para continuar.";
         return null;
-      case 3:
+      case 4:
         if (!data.fraseNaoMereco.trim()) return "Complete a frase para continuar.";
         if (!data.historicoPessoal) return "Escolha uma opção para continuar.";
         if (!data.mudancaPrioritaria.trim()) return "Conte qual mudança você mais deseja.";
         return null;
-      case 4:
+      case 5:
         if (!data.relacaoPaisDinheiro) return "Escolha uma opção para continuar.";
         if (!data.fraseInfancia.trim()) return "Conte a frase que mais ouviu na infância.";
         if (!data.sentimentoInfancia) return "Escolha como se sentiu na infância.";
         return null;
-      case 5:
+      case 6:
         if (!data.padraoRepetidoNivel) return "Escolha o nível de consciência sobre o padrão.";
         if (!data.demonstracaoAfeto) return "Escolha como era a demonstração de afeto.";
         if (!data.traumaInfancia) return "Responda sobre trauma na infância.";
         if (!data.mensagemAncestral.trim()) return "Escreva a mensagem ancestral para continuar.";
         return null;
-      case 6:
+      case 7:
         if (!data.escoreAbandono) return "Avalie seu Vírus de Abandono (Q15).";
         if (!data.escoreRejeicao) return "Avalie seu Vírus de Rejeição (Q16).";
         if (!data.escoreInferioridade) return "Avalie seu Vírus de Inferioridade (Q17).";
         if (!data.escoreNegacaoAbundancia) return "Avalie seu Vírus de Negação da Abundância (Q18).";
         if (!data.escoreAusenciaAfetiva) return "Avalie seu Vírus de Ausência Afetiva (Q19).";
         return null;
-      case 7:
+      case 8:
         if (!data.padraoNaoConsegue.trim()) return "Descreva o padrão que você repete e não consegue mudar.";
         return null;
-      case 8:
+      case 9:
         if (data.tensaoCorpo.length === 0) return "Selecione ao menos uma região do corpo.";
         if (!data.padraoDormindo) return "Escolha seu padrão de sono.";
         if (!data.nivelEnergia) return "Escolha seu nível de energia.";
         return null;
-      case 9:
+      case 10:
         if (!data.relacaoComida) return "Escolha sua relação com comida e corpo.";
         if (!data.escoreBloqueioSomatico) return "Avalie o bloqueio somático (Q27).";
         if (!data.palavraCorpo.trim()) return "Escreva uma palavra para descrever seu corpo.";
         return null;
-      case 10:
+      case 11:
         if (!data.maiorSonho.trim()) return "Conte seu maior sonho para continuar.";
         if (data.bloqueioSonho.length === 0) return "Escolha ao menos 1 bloqueio (máximo 2).";
         if (!data.prazSonho) return "Escolha o prazo para realizar seu sonho.";
         return null;
-      case 11:
+      case 12:
         if (!data.escoreComprometimento) return "Avalie seu nível de comprometimento.";
         if (!data.sinalSucesso.trim()) return "Descreva o sinal de que o Holo está funcionando.";
         if (!data.frenteTrabalho) return "Escolha sua frente prioritária de trabalho.";
@@ -226,11 +232,11 @@ function Index() {
       setError(err);
       return;
     }
-    if (step === TOTAL_STEPS) {
+    if (step === TOTAL_STEPS + 1) {
       setSubmitting(true);
       setSubmissionStatus("sending");
       setSubmissionError(null);
-      setStep(TOTAL_STEPS + 1);
+      setStep(TOTAL_STEPS + 2);
 
       if (typeof window !== "undefined") {
         window.scrollTo({ top: 0, behavior: "instant" });
@@ -273,15 +279,49 @@ function Index() {
   };
 
   const stepContent = (() => {
-    // ─── Etapa 1: Q1 + Q2 ───────────────────────────────────
+    // ─── Etapa 1: Dados pessoais ─────────────────────────────
     if (step === 1)
+      return (
+        <FormShell
+          title="Antes de começar"
+          subtitle="Essas informações nos ajudam a personalizar o seu Mapa Vibracional."
+          onBack={back}
+          onNext={next}
+          error={error}
+        >
+          <div className="space-y-2">
+            <Label className="text-foreground/90 text-sm">Qual é o seu nome?</Label>
+            <Input
+              value={data.nome}
+              onChange={(e) => update("nome", e.target.value)}
+              placeholder="Digite seu nome..."
+              className="h-12 rounded-xl bg-card/60 text-base"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-foreground/90 text-sm">Qual é o seu sexo?</Label>
+            <div className="grid grid-cols-2 gap-2">
+              {sexoOpts.map((opt) => (
+                <OptionCard
+                  key={opt}
+                  label={opt}
+                  selected={data.sexo === opt}
+                  onClick={() => update("sexo", opt)}
+                />
+              ))}
+            </div>
+          </div>
+        </FormShell>
+      );
+
+    // ─── Etapa 2: Q1 + Q2 ───────────────────────────────────
+    if (step === 2)
       return (
         <FormShell
           title="Qual é o seu estado vibracional agora?"
           subtitle="Responda com honestidade, não existe resposta certa ou errada."
           onBack={back}
           onNext={next}
-          isFirst
           error={error}
         >
           <BlockLabel>Bloco 1 · Perfil Vibracional</BlockLabel>
@@ -316,8 +356,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 2: Q3 + Q4 ───────────────────────────────────
-    if (step === 2)
+    // ─── Etapa 3: Q3 + Q4 ───────────────────────────────────
+    if (step === 3)
       return (
         <FormShell
           title="Onde sua energia está mais travada?"
@@ -359,8 +399,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 3: Q5 + Q6 + Q7 ──────────────────────────────
-    if (step === 3)
+    // ─── Etapa 4: Q5 + Q6 + Q7 ──────────────────────────────
+    if (step === 4)
       return (
         <FormShell
           title="As frases que revelam você"
@@ -408,8 +448,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 4: Q8 + Q9 + Q10 ─────────────────────────────
-    if (step === 4)
+    // ─── Etapa 5: Q8 + Q9 + Q10 ─────────────────────────────
+    if (step === 5)
       return (
         <FormShell
           title="As raízes do que você carrega"
@@ -459,8 +499,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 5: Q11 + Q12 + Q13 + Q14 ────────────────────
-    if (step === 5)
+    // ─── Etapa 6: Q11 + Q12 + Q13 + Q14 ────────────────────
+    if (step === 6)
       return (
         <FormShell
           title="Padrões, afeto e herança vibracional"
@@ -540,8 +580,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 6: Q15–Q19 ────────────────────────────────────
-    if (step === 6)
+    // ─── Etapa 7: Q15–Q19 ────────────────────────────────────
+    if (step === 7)
       return (
         <FormShell
           title="Os 5 Vírus Emocionais"
@@ -611,8 +651,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 7: Q20 + Q21 ──────────────────────────────────
-    if (step === 7)
+    // ─── Etapa 8: Q20 + Q21 ──────────────────────────────────
+    if (step === 8)
       return (
         <FormShell
           title="Situação real e padrão central"
@@ -648,8 +688,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 8: Q22 + Q23 + Q24 ────────────────────────────
-    if (step === 8)
+    // ─── Etapa 9: Q22 + Q23 + Q24 ────────────────────────────
+    if (step === 9)
       return (
         <FormShell
           title="O corpo não mente"
@@ -704,8 +744,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 9: Q25 + Q26 + Q27 + Q28 ─────────────────────
-    if (step === 9)
+    // ─── Etapa 10: Q25 + Q26 + Q27 + Q28 ─────────────────────
+    if (step === 10)
       return (
         <FormShell
           title="Saúde, corpo e frequência somática"
@@ -764,8 +804,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 10: Q29 + Q30 + Q31 ───────────────────────────
-    if (step === 10)
+    // ─── Etapa 11: Q29 + Q30 + Q31 ───────────────────────────
+    if (step === 11)
       return (
         <FormShell
           title="O sonho que ainda espera por você"
@@ -826,8 +866,8 @@ function Index() {
         </FormShell>
       );
 
-    // ─── Etapa 11: Q32 + Q33 + Q34 + Q35 ────────────────────
-    if (step === 11)
+    // ─── Etapa 12: Q32 + Q33 + Q34 + Q35 ────────────────────
+    if (step === 12)
       return (
         <FormShell
           title="Sua intenção de cocriação"
@@ -897,14 +937,14 @@ function Index() {
 
       {step === 0 && <Intro onStart={() => setStep(1)} />}
 
-      {step >= 1 && step <= TOTAL_STEPS && (
+      {step >= 1 && step <= TOTAL_STEPS + 1 && (
         <div key={step} className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <ProgressBar step={step} />
+          {step >= 2 && <ProgressBar step={step - 1} />}
           {stepContent}
         </div>
       )}
 
-      {step === TOTAL_STEPS + 1 && (
+      {step === TOTAL_STEPS + 2 && (
         <Confirmation
           data={data}
           onRestart={restart}

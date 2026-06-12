@@ -1,6 +1,8 @@
 ﻿import { FormData } from "./holo-form";
 
 export type N8nPayload = {
+  nome: string;
+  sexo: string;
   anamnese: string;
   enviadoEm: string;
 };
@@ -29,6 +31,12 @@ export function formatFormDataForN8n(formData: FormData): N8nPayload {
 
   lines.push("ANAMNESE VIBRACIONAL - MAPA VIBRACIONAL PERSONALIZADO");
   lines.push("=".repeat(55));
+  lines.push("");
+
+  lines.push("=== DADOS PESSOAIS ===");
+  lines.push("");
+  lines.push(`Nome: ${formData.nome || "(não informado)"}`);
+  lines.push(`Sexo: ${formData.sexo || "(não informado)"}`);
   lines.push("");
 
   lines.push("=== BLOCO 1: PERFIL VIBRACIONAL ===");
@@ -147,6 +155,8 @@ export function formatFormDataForN8n(formData: FormData): N8nPayload {
   lines.push("");
 
   return {
+    nome: formData.nome,
+    sexo: formData.sexo,
     anamnese: lines.join("\n"),
     enviadoEm: new Date().toISOString(),
   };
