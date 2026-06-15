@@ -339,6 +339,14 @@ function Index() {
                 />
               ))}
             </div>
+            {data.emocaoDominante === "Outro" && (
+              <Textarea
+                value={data.emocaoDominanteOutro}
+                onChange={(e) => update("emocaoDominanteOutro", e.target.value)}
+                placeholder="Descreva sua emoção..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -352,6 +360,14 @@ function Index() {
                 onClick={() => update("relacaoDinheiro", opt)}
               />
             ))}
+            {data.relacaoDinheiro === "Outro" && (
+              <Textarea
+                value={data.relacaoDinheiroOutro}
+                onChange={(e) => update("relacaoDinheiroOutro", e.target.value)}
+                placeholder="Descreva sua relação com o dinheiro..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
         </FormShell>
       );
@@ -382,6 +398,14 @@ function Index() {
                 />
               ))}
             </div>
+            {data.pilarBloqueado.includes("Outro") && (
+              <Textarea
+                value={data.pilarBloqueadoOutro}
+                onChange={(e) => update("pilarBloqueadoOutro", e.target.value)}
+                placeholder="Descreva o pilar bloqueado..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -395,6 +419,14 @@ function Index() {
                 onClick={() => update("padraoBotagem", opt)}
               />
             ))}
+            {data.padraoBotagem === "Outro" && (
+              <Textarea
+                value={data.padraoBotaoOutro}
+                onChange={(e) => update("padraoBotaoOutro", e.target.value)}
+                placeholder="Descreva o que normalmente acontece..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
         </FormShell>
       );
@@ -433,6 +465,14 @@ function Index() {
                 onClick={() => update("historicoPessoal", opt)}
               />
             ))}
+            {data.historicoPessoal === "Outro" && (
+              <Textarea
+                value={data.historicoPessoalOutro}
+                onChange={(e) => update("historicoPessoalOutro", e.target.value)}
+                placeholder="Descreva seu histórico..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -471,6 +511,14 @@ function Index() {
                 onClick={() => update("relacaoPaisDinheiro", opt)}
               />
             ))}
+            {data.relacaoPaisDinheiro === "Outro" && (
+              <Textarea
+                value={data.relacaoPaisDinheiroOutro}
+                onChange={(e) => update("relacaoPaisDinheiroOutro", e.target.value)}
+                placeholder="Descreva a relação dos seus pais com o dinheiro..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -495,6 +543,14 @@ function Index() {
                 onClick={() => update("sentimentoInfancia", opt)}
               />
             ))}
+            {data.sentimentoInfancia === "Outro" && (
+              <Textarea
+                value={data.sentimentoInfanciaOutro}
+                onChange={(e) => update("sentimentoInfanciaOutro", e.target.value)}
+                placeholder="Descreva como você se sentiu na infância..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
         </FormShell>
       );
@@ -529,6 +585,14 @@ function Index() {
                 />
               ))}
             </div>
+            {data.padraoRepetidoNivel === "Outro" && (
+              <Textarea
+                value={data.padraoRepetidoNivelOutro}
+                onChange={(e) => update("padraoRepetidoNivelOutro", e.target.value)}
+                placeholder="Descreva seu nível de consciência sobre o padrão..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -542,6 +606,14 @@ function Index() {
                 onClick={() => update("demonstracaoAfeto", opt)}
               />
             ))}
+            {data.demonstracaoAfeto === "Outro" && (
+              <Textarea
+                value={data.demonstracaoAfetoOutro}
+                onChange={(e) => update("demonstracaoAfetoOutro", e.target.value)}
+                placeholder="Descreva como era a demonstração de afeto..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -714,6 +786,14 @@ function Index() {
                 />
               ))}
             </div>
+            {data.tensaoCorpo.includes("Outro") && (
+              <Textarea
+                value={data.tensaoCorpoOutro}
+                onChange={(e) => update("tensaoCorpoOutro", e.target.value)}
+                placeholder="Descreva onde sente tensão ou desconforto..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -727,6 +807,14 @@ function Index() {
                 onClick={() => update("padraoDormindo", opt)}
               />
             ))}
+            {data.padraoDormindo === "Outro" && (
+              <Textarea
+                value={data.padraoDormindoOutro}
+                onChange={(e) => update("padraoDormindoOutro", e.target.value)}
+                placeholder="Descreva seu padrão de sono..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">
@@ -740,6 +828,14 @@ function Index() {
                 onClick={() => update("nivelEnergia", opt)}
               />
             ))}
+            {data.nivelEnergia === "Outro" && (
+              <Textarea
+                value={data.nivelEnergiaOutro}
+                onChange={(e) => update("nivelEnergiaOutro", e.target.value)}
+                placeholder="Descreva seu nível de energia..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
         </FormShell>
       );
@@ -778,6 +874,14 @@ function Index() {
                 onClick={() => update("relacaoComida", opt)}
               />
             ))}
+            {data.relacaoComida === "Outro" && (
+              <Textarea
+                value={data.relacaoComidaOutro}
+                onChange={(e) => update("relacaoComidaOutro", e.target.value)}
+                placeholder="Descreva sua relação com comida e corpo..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm leading-relaxed">
@@ -862,6 +966,14 @@ function Index() {
                 onClick={() => update("prazSonho", opt)}
               />
             ))}
+            {data.prazSonho === "Outro" && (
+              <Textarea
+                value={data.prazSonhoOutro}
+                onChange={(e) => update("prazSonhoOutro", e.target.value)}
+                placeholder="Descreva o prazo que tem em mente..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
         </FormShell>
       );
@@ -913,6 +1025,14 @@ function Index() {
                 onClick={() => update("frenteTrabalho", opt)}
               />
             ))}
+            {data.frenteTrabalho === "Outro" && (
+              <Textarea
+                value={data.frenteTrabalhoOutro}
+                onChange={(e) => update("frenteTrabalhoOutro", e.target.value)}
+                placeholder="Descreva em qual frente prefere trabalhar..."
+                className="min-h-[70px] rounded-xl bg-card/60 text-base leading-relaxed"
+              />
+            )}
           </div>
           <div className="space-y-2">
             <Label className="text-foreground/90 text-sm">

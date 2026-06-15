@@ -5,20 +5,29 @@ export type FormData = {
 
   // Bloco 1 - Perfil Vibracional
   emocaoDominante: string;
+  emocaoDominanteOutro: string;
   relacaoDinheiro: string;
+  relacaoDinheiroOutro: string;
   pilarBloqueado: string[];
+  pilarBloqueadoOutro: string;
   padraoBotagem: string;
+  padraoBotaoOutro: string;
   fraseNaoMereco: string;
   historicoPessoal: string;
+  historicoPessoalOutro: string;
   mudancaPrioritaria: string;
 
   // Bloco 2 - Raízes Ancestrais
   relacaoPaisDinheiro: string;
+  relacaoPaisDinheiroOutro: string;
   fraseInfancia: string;
   sentimentoInfancia: string;
+  sentimentoInfanciaOutro: string;
   padraoRepetido: string;
   padraoRepetidoNivel: string;
+  padraoRepetidoNivelOutro: string;
   demonstracaoAfeto: string;
+  demonstracaoAfetoOutro: string;
   traumaInfancia: string;
   traumaDescricao: string;
   mensagemAncestral: string;
@@ -34,10 +43,14 @@ export type FormData = {
 
   // Bloco 4 - Corpo e Frequência Atual
   tensaoCorpo: string[];
+  tensaoCorpoOutro: string;
   padraoDormindo: string;
+  padraoDormindoOutro: string;
   nivelEnergia: string;
+  nivelEnergiaOutro: string;
   saudeRecorrente: string;
   relacaoComida: string;
+  relacaoComidaOutro: string;
   escoreBloqueioSomatico: string;
   palavraCorpo: string;
 
@@ -46,9 +59,11 @@ export type FormData = {
   bloqueioSonho: string[];
   bloqueioSonhoOutro: string;
   prazSonho: string;
+  prazSonhoOutro: string;
   escoreComprometimento: string;
   sinalSucesso: string;
   frenteTrabalho: string;
+  frenteTrabalhoOutro: string;
   transformacao: string;
 };
 
@@ -56,18 +71,27 @@ export const initialFormData: FormData = {
   nome: "",
   sexo: "",
   emocaoDominante: "",
+  emocaoDominanteOutro: "",
   relacaoDinheiro: "",
+  relacaoDinheiroOutro: "",
   pilarBloqueado: [],
+  pilarBloqueadoOutro: "",
   padraoBotagem: "",
+  padraoBotaoOutro: "",
   fraseNaoMereco: "",
   historicoPessoal: "",
+  historicoPessoalOutro: "",
   mudancaPrioritaria: "",
   relacaoPaisDinheiro: "",
+  relacaoPaisDinheiroOutro: "",
   fraseInfancia: "",
   sentimentoInfancia: "",
+  sentimentoInfanciaOutro: "",
   padraoRepetido: "",
   padraoRepetidoNivel: "",
+  padraoRepetidoNivelOutro: "",
   demonstracaoAfeto: "",
+  demonstracaoAfetoOutro: "",
   traumaInfancia: "",
   traumaDescricao: "",
   mensagemAncestral: "",
@@ -79,19 +103,25 @@ export const initialFormData: FormData = {
   situacaoRecente: "",
   padraoNaoConsegue: "",
   tensaoCorpo: [],
+  tensaoCorpoOutro: "",
   padraoDormindo: "",
+  padraoDormindoOutro: "",
   nivelEnergia: "",
+  nivelEnergiaOutro: "",
   saudeRecorrente: "",
   relacaoComida: "",
+  relacaoComidaOutro: "",
   escoreBloqueioSomatico: "",
   palavraCorpo: "",
   maiorSonho: "",
   bloqueioSonho: [],
   bloqueioSonhoOutro: "",
   prazSonho: "",
+  prazSonhoOutro: "",
   escoreComprometimento: "",
   sinalSucesso: "",
   frenteTrabalho: "",
+  frenteTrabalhoOutro: "",
   transformacao: "",
 };
 
@@ -114,6 +144,7 @@ export const emocaoDominanteOpts = [
   "Contentamento",
   "Alegria",
   "Amor",
+  "Outro",
 ];
 
 export const relacaoDinheiroOpts = [
@@ -122,6 +153,7 @@ export const relacaoDinheiroOpts = [
   "Oscila muito (altos e baixos)",
   "Fluindo com equilíbrio",
   "Não tenho relação clara com ele",
+  "Outro",
 ];
 
 export const pilarBloqueadoOpts = [
@@ -132,6 +164,7 @@ export const pilarBloqueadoOpts = [
   "Propósito / Carreira",
   "Autoestima",
   "Espiritualidade",
+  "Outro",
 ];
 
 export const padraoBotaoOpts = [
@@ -140,6 +173,7 @@ export const padraoBotaoOpts = [
   "Surge um problema inesperado",
   "Perco o interesse ou a energia",
   "Geralmente consigo concluir",
+  "Outro",
 ];
 
 export const historicoPessoalOpts = [
@@ -147,6 +181,7 @@ export const historicoPessoalOpts = [
   "Sim, alguns (1 a 3)",
   "Poucos (tentativas rápidas)",
   "Não, esta é minha primeira vez",
+  "Outro",
 ];
 
 // Bloco 2
@@ -156,6 +191,7 @@ export const relacaoPaisDinheiroOpts = [
   "Suficiente mas nunca abundante",
   "Abundante e fluindo",
   "Não tive essa referência",
+  "Outro",
 ];
 
 export const sentimentoInfanciaOpts = [
@@ -165,6 +201,8 @@ export const sentimentoInfanciaOpts = [
   "Rejeitado(a) ou excluído(a)",
   "Controlado(a) em excesso",
   "Confuso(a) / ambiente instável",
+  "Abandonado(a)",
+  "Outro",
 ];
 
 export const padraoRepetidoNivelOpts = [
@@ -172,6 +210,7 @@ export const padraoRepetidoNivelOpts = [
   "Suspeito que existe mas não tenho certeza",
   "Nunca pensei nisso",
   "Tenho certeza que não existe",
+  "Outro",
 ];
 
 export const demonstracaoAfetoOpts = [
@@ -180,6 +219,7 @@ export const demonstracaoAfetoOpts = [
   "Sufocante / controladora",
   "Instável (às vezes amorosa, às vezes ausente)",
   "Ausente ou inexistente",
+  "Outro",
 ];
 
 export const traumaInfanciaOpts = ["Sim", "Não"];
@@ -195,6 +235,7 @@ export const tensaoCorpoOpts = [
   "Quadril / Base",
   "Pernas",
   "Difuso pelo corpo todo",
+  "Outro",
 ];
 
 export const padraoDormindoOpts = [
@@ -203,6 +244,7 @@ export const padraoDormindoOpts = [
   "Acordo no meio da noite",
   "Durmo muito mas não descanso",
   "Uso algo para conseguir dormir",
+  "Outro",
 ];
 
 export const nivelEnergiaOpts = [
@@ -211,6 +253,7 @@ export const nivelEnergiaOpts = [
   "Regular",
   "Boa na maior parte do tempo",
   "Alta e consistente",
+  "Outro",
 ];
 
 export const relacaoComidaOpts = [
@@ -219,6 +262,7 @@ export const relacaoComidaOpts = [
   "Ignorada (não presto atenção)",
   "Conflituosa / me critico muito",
   "Em processo de melhora",
+  "Outro",
 ];
 
 // Bloco 5
@@ -238,6 +282,7 @@ export const prazSonhoOpts = [
   "2 anos",
   "3 a 5 anos",
   "Não tenho prazo definido",
+  "Outro",
 ];
 
 export const frenteTrabalhoOpts = [
@@ -245,6 +290,7 @@ export const frenteTrabalhoOpts = [
   "Reprogramação de crenças limitantes",
   "Cocriação de metas e manifestação",
   "Equilíbrio entre as três",
+  "Outro",
 ];
 
 export const TOTAL_STEPS = 11;
