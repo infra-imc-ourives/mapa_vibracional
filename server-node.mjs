@@ -150,7 +150,30 @@ async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
     }
   }
 
-  // 7. Log na tabela Supabase
+  // 7. Adicionar tag para disparar automação
+  const AC_TAG = process.env.ACTIVECAMPAIGN_TAG || "MAPA_VIBRACIONAL_GERADO";
+  const tagRes = await fetch(`${AC_URL}/api/3/tags?filters[tag]=${encodeURIComponent(AC_TAG)}`, {
+    headers: { "Api-Token": AC_KEY },
+  });
+  const { tags = [] } = tagRes.ok ? await tagRes.json() : {};
+  let tagId = tags[0]?.id;
+  if (!tagId) {
+    const createTagRes = await fetch(`${AC_URL}/api/3/tags`, {
+      method: "POST",
+      headers: { "Api-Token": AC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ tag: { tag: AC_TAG, tagType: "contact", description: "" } }),
+    });
+    if (createTagRes.ok) tagId = (await createTagRes.json()).tag?.id;
+  }
+  if (tagId) {
+    await fetch(`${AC_URL}/api/3/contactTags`, {
+      method: "POST",
+      headers: { "Api-Token": AC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ contactTag: { contact: contactId, tag: tagId } }),
+    });
+  }
+
+  // 8. Log na tabela Supabase
   await fetch(`${SUPABASE_URL}/rest/v1/pdf_novo_aluno_links`, {
     method: "POST",
     headers: {

@@ -145,8 +145,41 @@ async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
   }
   console.log("     ✅  Campo PDF_NOVO_ALUNO atualizado no ActiveCampaign");
 
-  // 6. Log na tabela Supabase
-  console.log("7/7  Salvando log na tabela pdf_novo_aluno_links...");
+  // 6. Adicionar tag para disparar automação
+  const AC_TAG = process.env.ACTIVECAMPAIGN_TAG || "MAPA_VIBRACIONAL_GERADO";
+  console.log(`7/8  Adicionando tag "${AC_TAG}" ao contato...`);
+  const tagSearchRes = await fetch(
+    `${AC_URL}/api/3/tags?filters[tag]=${encodeURIComponent(AC_TAG)}`,
+    { headers: { "Api-Token": AC_KEY } }
+  );
+  const { tags = [] } = tagSearchRes.ok ? await tagSearchRes.json() : {};
+  let tagId = tags[0]?.id;
+  if (!tagId) {
+    console.log("     ℹ️   Tag não encontrada, criando...");
+    const createTagRes = await fetch(`${AC_URL}/api/3/tags`, {
+      method: "POST",
+      headers: { "Api-Token": AC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ tag: { tag: AC_TAG, tagType: "contact", description: "" } }),
+    });
+    if (createTagRes.ok) tagId = (await createTagRes.json()).tag?.id;
+  }
+  if (tagId) {
+    const ctRes = await fetch(`${AC_URL}/api/3/contactTags`, {
+      method: "POST",
+      headers: { "Api-Token": AC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ contactTag: { contact: contactId, tag: tagId } }),
+    });
+    if (ctRes.ok) {
+      console.log(`     ✅  Tag "${AC_TAG}" adicionada (tag ID: ${tagId})`);
+    } else {
+      console.warn(`     ⚠️   contactTags: HTTP ${ctRes.status}`);
+    }
+  } else {
+    console.warn("     ⚠️   Não foi possível obter o ID da tag");
+  }
+
+  // 7. Log na tabela Supabase
+  console.log("8/8  Salvando log na tabela pdf_novo_aluno_links...");
   const logRes = await fetch(`${SUPABASE_URL}/rest/v1/pdf_novo_aluno_links`, {
     method: "POST",
     headers: {
@@ -170,7 +203,7 @@ async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
     console.log("     ✅  Log salvo");
   }
 
-  return { pdfUrl, contactId };
+  return { pdfUrl, contactId, tagId };
 }
 
 // ── Execução ──────────────────────────────────────────────────────────────────
@@ -186,11 +219,12 @@ console.log("─".repeat(55));
 console.log();
 
 processPdfNovoAluno({ email: TEST_EMAIL, pdfBase64, fileName })
-  .then(({ pdfUrl, contactId }) => {
+  .then(({ pdfUrl, contactId, tagId }) => {
     console.log();
     console.log("─".repeat(55));
     console.log("  ✅  SUCESSO");
     console.log(`  Contact ID:  ${contactId}`);
+    console.log(`  Tag ID:      ${tagId}`);
     console.log(`  PDF URL:     ${pdfUrl}`);
     console.log("─".repeat(55));
   })

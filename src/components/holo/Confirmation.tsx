@@ -189,6 +189,12 @@ export function Confirmation({
               O botão estará disponível assim que o Mapa for gerado.
             </p>
           )}
+          {data.email && (
+            <p className="text-xs text-muted-foreground/70">
+              Após o download, o PDF também será enviado para{" "}
+              <span className="text-foreground/80">{data.email}</span>
+            </p>
+          )}
         </div>
       </div>
 
