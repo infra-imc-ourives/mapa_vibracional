@@ -36,6 +36,130 @@ setInterval(() => {
 
 const { default: worker } = await import("./dist/server/index.js");
 
+// ── Integração Supabase + ActiveCampaign ──────────────────────────────────────
+
+async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
+  const SUPABASE_URL    = process.env.SUPABASE_URL;
+  const SUPABASE_KEY    = process.env.SUPABASE_ANON_KEY;
+  const BUCKET          = process.env.SUPABASE_BUCKET_NAME || "pdf-novo-aluno";
+  const AC_URL          = process.env.ACTIVECAMPAIGN_API_URL;
+  const AC_KEY          = process.env.ACTIVECAMPAIGN_API_KEY;
+  const AC_PERSTAG      = process.env.ACTIVECAMPAIGN_FIELD_PERSTAG || "PDF_NOVO_ALUNO";
+
+  if (!SUPABASE_URL || !SUPABASE_KEY || !AC_URL || !AC_KEY) {
+    throw new Error("Variáveis de ambiente não configuradas (Supabase/ActiveCampaign).");
+  }
+
+  // 1. Upload no Supabase Storage
+  const storagePath = `novo-aluno/${fileName}`;
+  const pdfBuffer   = Buffer.from(pdfBase64, "base64");
+
+  const uploadRes = await fetch(
+    `${SUPABASE_URL}/storage/v1/object/${BUCKET}/${storagePath}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/pdf",
+        "x-upsert": "true",
+      },
+      body: pdfBuffer,
+    }
+  );
+  if (!uploadRes.ok) {
+    throw new Error(`Supabase Storage upload falhou: ${await uploadRes.text()}`);
+  }
+
+  // 2. URL pública
+  const pdfUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`;
+
+  // 3. Buscar contato no ActiveCampaign
+  const contactRes = await fetch(
+    `${AC_URL}/api/3/contacts?filters[email]=${encodeURIComponent(email)}`,
+    { headers: { "Api-Token": AC_KEY } }
+  );
+  if (!contactRes.ok) {
+    throw new Error(`ActiveCampaign contacts: HTTP ${contactRes.status}`);
+  }
+  const { contacts = [] } = await contactRes.json();
+  if (contacts.length === 0) {
+    throw new Error(`Contato não encontrado no ActiveCampaign: ${email}`);
+  }
+  const contactId = contacts[0].id;
+
+  // 4. Buscar ID do campo pelo perstag
+  const fieldRes = await fetch(
+    `${AC_URL}/api/3/fields?filters[perstag]=${AC_PERSTAG}`,
+    { headers: { "Api-Token": AC_KEY } }
+  );
+  if (!fieldRes.ok) {
+    throw new Error(`ActiveCampaign fields: HTTP ${fieldRes.status}`);
+  }
+  const { fields = [] } = await fieldRes.json();
+  if (fields.length === 0) {
+    throw new Error(`Campo ${AC_PERSTAG} não encontrado no ActiveCampaign`);
+  }
+  const fieldId = fields[0].id;
+
+  // 5. Verificar se já existe fieldValue para esse contato+campo
+  const fvRes  = await fetch(
+    `${AC_URL}/api/3/fieldValues?filters[contact]=${contactId}&filters[field]=${fieldId}`,
+    { headers: { "Api-Token": AC_KEY } }
+  );
+  const { fieldValues = [] } = fvRes.ok ? await fvRes.json() : {};
+  const existing = fieldValues.find(
+    (fv) => String(fv.contact) === String(contactId) && String(fv.field) === String(fieldId)
+  );
+
+  const fvBody = JSON.stringify({
+    fieldValue: { contact: contactId, field: fieldId, value: pdfUrl },
+  });
+  const fvHeaders = { "Api-Token": AC_KEY, "Content-Type": "application/json" };
+
+  if (existing) {
+    // 6a. Atualizar
+    const upRes = await fetch(`${AC_URL}/api/3/fieldValues/${existing.id}`, {
+      method: "PUT",
+      headers: fvHeaders,
+      body: fvBody,
+    });
+    if (!upRes.ok) {
+      throw new Error(`ActiveCampaign fieldValue update: HTTP ${upRes.status}`);
+    }
+  } else {
+    // 6b. Criar
+    const crRes = await fetch(`${AC_URL}/api/3/fieldValues`, {
+      method: "POST",
+      headers: fvHeaders,
+      body: fvBody,
+    });
+    if (!crRes.ok) {
+      throw new Error(`ActiveCampaign fieldValue create: HTTP ${crRes.status}`);
+    }
+  }
+
+  // 7. Log na tabela Supabase
+  await fetch(`${SUPABASE_URL}/rest/v1/pdf_novo_aluno_links`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      apikey: SUPABASE_KEY,
+      "Content-Type": "application/json",
+      Prefer: "return=minimal",
+    },
+    body: JSON.stringify({
+      contact_email: email,
+      activecampaign_contact_id: String(contactId),
+      storage_bucket: BUCKET,
+      storage_path: storagePath,
+      pdf_url: pdfUrl,
+      field_perstag: AC_PERSTAG,
+    }),
+  });
+
+  return { pdfUrl, contactId };
+}
+
 async function readBody(req) {
   if (req.method === "GET" || req.method === "HEAD") return undefined;
   const chunks = [];
@@ -46,6 +170,39 @@ async function readBody(req) {
 const server = createServer(async (req, res) => {
   try {
     const url = req.url || "/";
+
+    // OPTIONS preflight para /api/*
+    if (req.method === "OPTIONS" && url.startsWith("/api/")) {
+      res.writeHead(204, {
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "POST, OPTIONS",
+        "access-control-allow-headers": "content-type",
+      });
+      res.end();
+      return;
+    }
+
+    // POST /api/process-pdf — upload Supabase + ActiveCampaign
+    if (url === "/api/process-pdf" && req.method === "POST") {
+      const corsHeaders = {
+        "content-type": "application/json",
+        "access-control-allow-origin": "*",
+      };
+      try {
+        const bodyBuf = await readBody(req);
+        if (!bodyBuf) throw new Error("Body vazio.");
+        const { email, pdfBase64, fileName } = JSON.parse(bodyBuf.toString());
+        if (!email || !pdfBase64 || !fileName) throw new Error("Parâmetros inválidos.");
+        const result = await processPdfNovoAluno({ email, pdfBase64, fileName });
+        res.writeHead(200, corsHeaders);
+        res.end(JSON.stringify({ success: true, ...result }));
+      } catch (err) {
+        console.error("[process-pdf]", err.message);
+        res.writeHead(500, corsHeaders);
+        res.end(JSON.stringify({ error: err.message }));
+      }
+      return;
+    }
 
     // Polling endpoint: GET /n8n-proxy/job/:jobId
     if (url.startsWith("/n8n-proxy/job/")) {

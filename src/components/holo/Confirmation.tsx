@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { FormData } from "@/lib/holo-form";
 import { N8nResponse, extractOutputText } from "@/lib/n8n-service";
 import { generateAndDownloadPdf } from "@/lib/generate-pdf";
+import { processPdfNovoAluno } from "@/lib/process-pdf-novo-aluno";
 
 export type SubmissionStatus = "idle" | "sending" | "success" | "error";
 
@@ -32,7 +33,15 @@ export function Confirmation({
     if (!outputText) return;
     setDownloading(true);
     try {
-      await generateAndDownloadPdf(outputText, data.nome, data.transformacao, data.sexo);
+      const pdfBuffer = await generateAndDownloadPdf(outputText, data.nome, data.transformacao, data.sexo);
+
+      if (data.email) {
+        processPdfNovoAluno({
+          contactEmail: data.email,
+          pdfBuffer,
+          fileName: `${crypto.randomUUID()}.pdf`,
+        }).catch((err) => console.error("[process-pdf-novo-aluno]", err));
+      }
     } finally {
       setDownloading(false);
     }

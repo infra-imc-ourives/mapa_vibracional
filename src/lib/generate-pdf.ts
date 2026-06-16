@@ -124,7 +124,7 @@ export async function generateAndDownloadPdf(
   nome: string,
   intencao: string,
   sexo: string = ""
-): Promise<void> {
+): Promise<Uint8Array> {
   const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const pageW = doc.internal.pageSize.getWidth();
@@ -220,5 +220,7 @@ export async function generateAndDownloadPdf(
     doc.text(`${i} / ${totalPages}`, pageW - margin, pageH - 7, { align: "right" });
   }
 
+  const pdfBuffer = new Uint8Array(doc.output("arraybuffer") as ArrayBuffer);
   doc.save(`Mapa-Vibracional-Personalizado.pdf`);
+  return pdfBuffer;
 }

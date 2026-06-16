@@ -164,6 +164,8 @@ function Index() {
     switch (s) {
       case 1:
         if (!data.nome.trim()) return "Por favor, informe seu nome.";
+        if (!data.email.trim()) return "Por favor, informe seu e-mail.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) return "Informe um e-mail válido.";
         if (!data.sexo) return "Por favor, selecione seu sexo.";
         return null;
       case 2:
@@ -295,6 +297,16 @@ function Index() {
               value={data.nome}
               onChange={(e) => update("nome", e.target.value)}
               placeholder="Digite seu nome..."
+              className="h-12 rounded-xl bg-card/60 text-base"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label className="text-foreground/90 text-sm">Qual é o seu e-mail?</Label>
+            <Input
+              type="email"
+              value={data.email}
+              onChange={(e) => update("email", e.target.value)}
+              placeholder="seu@email.com"
               className="h-12 rounded-xl bg-card/60 text-base"
             />
           </div>

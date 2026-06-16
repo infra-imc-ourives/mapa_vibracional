@@ -1,6 +1,7 @@
 export type FormData = {
   // Dados pessoais
   nome: string;
+  email: string;
   sexo: string;
 
   // Bloco 1 - Perfil Vibracional
@@ -69,6 +70,7 @@ export type FormData = {
 
 export const initialFormData: FormData = {
   nome: "",
+  email: "",
   sexo: "",
   emocaoDominante: "",
   emocaoDominanteOutro: "",
