@@ -73,7 +73,7 @@ async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
   // 2. URL pública
   const pdfUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${storagePath}`;
 
-  // 3. Buscar contato no ActiveCampaign
+  // 3. Buscar contato no ActiveCampaign; criar se não existir
   const contactRes = await fetch(
     `${AC_URL}/api/3/contacts?filters[email]=${encodeURIComponent(email)}`,
     { headers: { "Api-Token": AC_KEY } }
@@ -82,10 +82,22 @@ async function processPdfNovoAluno({ email, pdfBase64, fileName }) {
     throw new Error(`ActiveCampaign contacts: HTTP ${contactRes.status}`);
   }
   const { contacts = [] } = await contactRes.json();
-  if (contacts.length === 0) {
-    throw new Error(`Contato não encontrado no ActiveCampaign: ${email}`);
+
+  let contactId;
+  if (contacts.length > 0) {
+    contactId = contacts[0].id;
+  } else {
+    const createRes = await fetch(`${AC_URL}/api/3/contacts`, {
+      method: "POST",
+      headers: { "Api-Token": AC_KEY, "Content-Type": "application/json" },
+      body: JSON.stringify({ contact: { email } }),
+    });
+    if (!createRes.ok) {
+      throw new Error(`ActiveCampaign criar contato: HTTP ${createRes.status}`);
+    }
+    const { contact } = await createRes.json();
+    contactId = contact.id;
   }
-  const contactId = contacts[0].id;
 
   // 4. Buscar ID do campo pelo perstag
   const fieldRes = await fetch(
