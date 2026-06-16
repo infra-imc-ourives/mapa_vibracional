@@ -161,9 +161,10 @@ export async function generateAndDownloadPdf(
 
   // ── Texto de abertura ─────────────────────────────────────
   const maravilhosa = sexo === "Masculino" ? "maravilhoso" : "maravilhosa";
+  const exposta = sexo === "Masculino" ? "exposto" : "exposta";
   const intro = [
     `Perfeito ${nome}. Você foi ${maravilhosa} por ter chego até aqui.`,
-    `O primeiro passo para uma verdadeira mudança acontece quando você se permite estar "exposta".`,
+    `O primeiro passo para uma verdadeira mudança acontece quando você se permite estar "${exposta}".`,
     `Se descrever com honestidade, com transparência. Abrir os véus da mente, do corpo e do coração. Não ter medo de julgamentos, porque você sabe que agora encontrou um lugar seguro, onde pode ser quem você realmente é!`,
     `E eu to muito orgulhosa de receber você aqui! Orgulhosa da sua coragem. Estamos construindo um caminho de muitas vitórias. E pode ter certeza, se você seguir o que vamos alinhar daqui em diante, esse caminho não tem volta.`,
     `Só vai andar para frente, em direção ao sucesso, à prosperidade e à abundância, em todas as áreas da sua vida.`,
